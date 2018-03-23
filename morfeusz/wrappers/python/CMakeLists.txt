@@ -34,7 +34,7 @@ add_custom_target (generate_python_setup_file
         DEPENDS ${SETUP_PY})
 
 add_custom_command (OUTPUT ${OUTPUT}
-                       COMMAND python
+                       COMMAND python3
                        ARGS ${SETUP_PY} build
                        DEPENDS generate_python_wrapper generate_python_setup_file libmorfeusz)
 
@@ -46,11 +46,11 @@ add_custom_target (pymorfeusz
 
 if (UNIX)
     add_custom_target (install-python
-        COMMAND python ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX}
+        COMMAND python3 ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX}
         DEPENDS pymorfeusz
     )
     add_custom_target (package-python-bin
-        COMMAND python ${SETUP_PY} bdist_egg -d "${TARGET_DIR}" --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
+        COMMAND python3 ${SETUP_PY} bdist_egg -d "${TARGET_DIR}" --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
         DEPENDS pymorfeusz
     )
     set (PACKAGE_DEPENDS "package-python-bin")

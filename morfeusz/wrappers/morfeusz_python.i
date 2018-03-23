@@ -80,7 +80,7 @@ def analyse_iter(self, text):
     """
     Analyse given text and return an iterator over MorphInterpretation objects as a result.
     """
-    return $action(self, text.encode('utf-8'))
+    return $action(self, text)
 %}
 
 %feature("shadow") morfeusz::Morfeusz::analyse %{
@@ -89,7 +89,7 @@ def analyse(self, text):
     Analyse given text and return a list of MorphInterpretation objects.
     """
     res = InterpsList()
-    $action(self, text.encode('utf-8'), res)
+    $action(self, text, res)
     return res
 %}
 
@@ -98,7 +98,7 @@ def setAggl(self, optionString):
     """
     Select agglutination rules option
     """
-    $action(self, optionString.encode('utf8'))
+    $action(self, optionString)
 %}
 
 %feature("shadow") morfeusz::Morfeusz::setPraet %{
@@ -106,7 +106,7 @@ def setPraet(self, optionString):
     """
     Select past tense segmentation
     """
-    $action(self, optionString.encode('utf8'))
+    $action(self, optionString)
 %}
 
 %feature("shadow") morfeusz::Morfeusz::setCaseHandling %{
@@ -138,7 +138,7 @@ def setDictionary(self, dictName):
     """
     Set dictionary to be used by this instance (by name)
     """
-    $action(self, dictName.encode('utf8'))
+    $action(self, dictName)
 %}
 
 %feature("shadow") morfeusz::Morfeusz::createInstance(morfeusz::MorfeuszUsage) %{
@@ -156,7 +156,7 @@ def createInstance(dictName=None, usage=BOTH_ANALYSE_AND_GENERATE):
     if dictName is None:
         return Morfeusz._createInstance(usage)
     else:
-        return $action(dictName.encode('utf8'), usage)
+        return $action(dictName, usage)
 %}
 
 %feature("shadow") morfeusz::Morfeusz::_generateByTagId %{
@@ -171,7 +171,6 @@ def generate(self, lemma, tagId=None):
     """
     Perform morphological synthesis on given text and return a list of MorphInterpretation objects.
     """
-    lemma = lemma.encode('utf-8')
     if tagId is not None:
         return self._generateByTagId(lemma, tagId)
     else:
@@ -186,11 +185,11 @@ def generate(self, lemma, tagId=None):
     %pythoncode %{
         @property
         def orth(self):
-            return self._orth.decode('utf8')
+            return self._orth
         
         @orth.setter
         def orth(self, val):
-            self._orth = val.encode('utf8')
+            self._orth = val
     %}
 };
 
@@ -200,11 +199,11 @@ def generate(self, lemma, tagId=None):
     %pythoncode %{
         @property
         def lemma(self):
-            return self._lemma.decode('utf8')
+            return self._lemma
         
         @lemma.setter
         def lemma(self, val):
-            self._lemma = val.encode('utf8')
+            self._lemma = val
     %}
 };
 
@@ -221,7 +220,7 @@ def getName(self, morfeusz):
     """
     Returns this interpretation named entity as unicode
     """
-    name = $action(self, morfeusz).decode('utf8')
+    name = $action(self, morfeusz)
     return name.split('|') if name else []
 %}
 
@@ -230,7 +229,7 @@ def getLabelsAsUnicode(self, morfeusz):
     """
     Returns this interpretation labels as string
     """
-    return $action(self, morfeusz).decode('utf8')
+    return $action(self, morfeusz)
 %}
 
 %feature("shadow") morfeusz::MorphInterpretation::getLabels %{
@@ -238,7 +237,7 @@ def getLabels(self, morfeusz):
     """
     Returns this interpretation labels as a list of strings
     """
-    return [l.decode('utf8') for l in $action(self, morfeusz)]
+    return [l for l in $action(self, morfeusz)]
 %}
 
 %feature("shadow") morfeusz::MorphInterpretation::createIgn %{
@@ -247,7 +246,7 @@ def createIgn(startNode, endNode, orth, lemma):
     """
     Creates unknown interpretation
     """
-    return $action(self, startNode, endNode, orth.encode('utf8'), lemma.encode('utf8'))
+    return $action(self, startNode, endNode, orth, lemma)
 %}
 
 %feature("shadow") morfeusz::MorphInterpretation::createWhitespace %{
@@ -256,42 +255,42 @@ def createWhitespace(startNode, endNode, orth):
     """
     Creates whitespace interpretation
     """
-    return $action(self, startNode, endNode, orth.encode('utf8'))
+    return $action(self, startNode, endNode, orth)
 %}
 
 %feature("shadow") morfeusz::IdResolver::getTag %{
 def getTag(self, tagId):
-    return $action(self, tagId).decode('utf8')
+    return $action(self, tagId)
 %}
 
 %feature("shadow") morfeusz::IdResolver::getTagId %{
 def getTagId(self, tag):
-    return $action(self, tag.encode('utf8'))
+    return $action(self, tag)
 %}
 
 %feature("shadow") morfeusz::IdResolver::getName %{
 def getName(self, nameId):
-    return $action(self, nameId).decode('utf8')
+    return $action(self, nameId)
 %}
 
 %feature("shadow") morfeusz::IdResolver::getNameId %{
 def getNameId(self, name):
-    return $action(self, name.encode('utf8'))
+    return $action(self, name)
 %}
 
 %feature("shadow") morfeusz::IdResolver::getLabelsAsString %{
 def getLabelsAsUnicode(self, labelsId):
-    return $action(self, labelsId).decode('utf8')
+    return $action(self, labelsId)
 %}
 
 %feature("shadow") morfeusz::IdResolver::getLabels %{
 def getLabels(self, labelsId):
-    return [l.decode('utf8') for l in $action(self, labelsId)]
+    return [l for l in $action(self, labelsId)]
 %}
 
 %feature("shadow") morfeusz::IdResolver::getLabelsId %{
 def getLabelsId(self, labelsStr):
-    return $action(self, labelsStr.encode('utf8'))
+    return $action(self, labelsStr)
 %}
 
 %pythoncode %{
@@ -308,7 +307,7 @@ BOTH_ANALYSE_AND_GENERATE = _morfeusz2.BOTH_ANALYSE_AND_GENERATE
 
 __version__ = _morfeusz2._Morfeusz_getVersion()
 
-__copyright__ = _morfeusz2._Morfeusz_getCopyright().decode('utf-8')
+__copyright__ = _morfeusz2._Morfeusz_getCopyright()
 
 GENDERS = ['m1', 'm2', 'm3', 'f', 'n']
 
@@ -440,10 +439,10 @@ class Morfeusz(_object):
         return interp_tuples
 
     def dict_id(self):
-        return self._morfeusz_obj.getDictID().decode('utf-8')
+        return self._morfeusz_obj.getDictID()
 
     def dict_copyright(self):
-        return self._morfeusz_obj.getDictCopyright().decode('utf-8')
+        return self._morfeusz_obj.getDictCopyright()
 %}
 
 %include "std_vector.i"
