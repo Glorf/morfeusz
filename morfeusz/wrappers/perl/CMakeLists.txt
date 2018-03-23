@@ -13,7 +13,7 @@ if (NOT CMAKE_CROSSCOMPILING)
     set (SWIG_FILE ../morfeusz.i)
     set_source_files_properties (${SWIG_FILE} PROPERTIES CPLUSPLUS ON)
     #set_source_files_properties (${SWIG_FILE} PROPERTIES SWIG_FLAGS "-nodefaultctor")
-    swig_add_module (morfeusz-perl perl ${SWIG_FILE})
+    swig_add_library (morfeusz-perl LANGUAGE perl SOURCES ${SWIG_FILE})
     swig_link_libraries (morfeusz-perl ${PERL_LIBRARIES})
     
     if ( CMAKE_COMPILER_IS_GNUCC )

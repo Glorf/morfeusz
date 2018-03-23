@@ -159,7 +159,7 @@ set (CPACK_PACKAGE_CONTACT "michal.lenart@ipipan.waw.pl")
 set (CPACK_DEBIAN_PACKAGE_VERSION "${Morfeusz_VERSION}")
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Morphological analyzer for the Polish language.")
 set (CPACK_PACKAGE_DESCRIPTION "This is the second version of Morfeusz. Among numerous improvements it has better segmentation and case-sensitive lemmas handling. It also makes it possible to perform morphological synthesis and to use your own dictionary")
-set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/License.txt")
+set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 set (CPACK_OUTPUT_FILE_PREFIX "${TARGET_DIR}")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

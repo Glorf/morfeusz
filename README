@@ -3,10 +3,14 @@
 Compilation - prerequisites
 ***************
 
-This tutorial assumes that build process is performed on Linux 64bit machine (preferably from Debian/Ubuntu family).
+This tutorial assumes that build process is performed on Linux 64bit machine (preferably Ubuntu).
 
 sudo apt-get install build-essential autotools-dev python python-setuptools python-stdeb python-pip python-all-dev python-pyparsing devscripts libcppunit-dev acl
 sudo pip install pyinstaller
+
+If building on Fedora, you'll have to perform at least:
+sudo dnf install swig perl-devel cppunit-devel
+
 
 For cross compiling:
 --------------------
