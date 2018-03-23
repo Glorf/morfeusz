@@ -21,7 +21,7 @@ namespace std {
         %rename(isEmpty) empty;
         bool empty() const;
         void clear();
-        void push_back(const value_type& x);
+//        void push_back(const value_type& x);
         %extend {
             const_reference get(int32_t i) const throw (std::out_of_range) {
                 return $self->at(i);

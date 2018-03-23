@@ -4,12 +4,12 @@ package pl.sgjp.morfeusz;
 /**
  * <p>The result of morphological analysis or synthesis</p>
  * 
- * <p>
+ * <pre>
  * The result of analysis is  a directed acyclic graph with numbered
  * nodes representing positions  in text (points _between_ segments)
  * and edges representing interpretations of segments that span from
  * one node to another.  E.g.,
- * <pre>
+ * {@code
  * {0,1,"ja","ja","ppron12:sg:nom:m1.m2.m3.f.n1.n2:pri"}
  *       |
  *       |      {1,2,"został","zostać","praet:sg:m1.m2.m3:perf"}
@@ -18,8 +18,8 @@ package pl.sgjp.morfeusz;
  *    /  \ /     \ / \
  *   * Ja * został*em *
  *   0    1       2   3
+ * }
  * </pre>
- * </p>
  * 
  * <p>
  * Note that the word 'zostałem' got broken into 2 separate segments.

@@ -54,23 +54,6 @@ if (UNIX)
         DEPENDS pymorfeusz
     )
     set (PACKAGE_DEPENDS "package-python-bin")
-    
-    if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-        add_custom_target (package-python-deb-sdist
-            COMMAND python ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"
-            DEPENDS pymorfeusz
-        )
-        add_custom_target (package-python-deb-build
-            COMMAND debuild -us -uc
-            WORKING_DIRECTORY deb_dist/morfeusz2-${PYMORFEUSZ_VERSION}
-            DEPENDS package-python-deb-sdist
-        )
-        add_custom_target(package-python-deb
-            COMMAND mkdir -p "${TARGET_DIR}" && cp ${CMAKE_CURRENT_BINARY_DIR}/deb_dist/python-morfeusz2*.deb "${TARGET_DIR}"
-            DEPENDS package-python-deb-build
-        )
-        list (APPEND PACKAGE_DEPENDS package-python-deb)
-    endif ()
     add_custom_target (package-python
         DEPENDS pymorfeusz ${PACKAGE_DEPENDS})
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND NOT CMAKE_CROSSCOMPILING)
