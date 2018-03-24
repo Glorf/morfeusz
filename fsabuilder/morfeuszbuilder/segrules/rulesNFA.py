@@ -41,16 +41,16 @@ class RulesNFAState(object):
         if not self in visitedStates:
             visitedStates.add(self)
             yield self
-            for _, nextStates in self.transitionsMap.iteritems():
+            for _, nextStates in iter(self.transitionsMap.items()):
                 for state in nextStates:
                     for state1 in state.dfs(visitedStates):
                         yield state1
     
     def debug(self):
-        print '----------------'
-        print 'STATE:', self.idx
-        for label, nextStates in self.transitionsMap.iteritems():
-            print label, '-->', [s.idx for s in sorted(nextStates, key=lambda s: s.idx)]
+        print('----------------')
+        print('STATE:', self.idx)
+        for label, nextStates in iter(self.transitionsMap.items()):
+            print(label, '-->', [s.idx for s in sorted(nextStates, key=lambda s: s.idx)])
 
 class RulesNFA(object):
     
@@ -60,7 +60,7 @@ class RulesNFA(object):
     def _groupOutputByLabels(self, nfaStates):
         res = {}
         for nfaState in nfaStates:
-            for label, nextStates in nfaState.transitionsMap.iteritems():
+            for label, nextStates in iter(nfaState.transitionsMap.items()):
                 if label is not None:
 #                     transitionData = nfaState.transitionsDataMap[label]
                     segnum, shiftOrth = label
@@ -90,7 +90,7 @@ class RulesNFA(object):
             # and contain info about weakness
             dfaState.setAsAccepting(weak=weak)
 #             dfaState.encodedData = bytearray([1 if weak else 0])
-        for (segnum, shiftOrth), nextNFAStates in self._groupOutputByLabels(nfaStates).iteritems():
+        for (segnum, shiftOrth), nextNFAStates in iter(self._groupOutputByLabels(nfaStates).items()):
             key = frozenset(nextNFAStates)
             if key in nfaSubset2DFAState:
                 nextDFAState = nfaSubset2DFAState[key]

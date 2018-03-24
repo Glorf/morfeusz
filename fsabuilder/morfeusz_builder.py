@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding:utf-8 -*-
 '''
 Created on 21 paź 2013
@@ -20,13 +20,13 @@ from optparse import OptionParser
 
 def _checkOption(opt, parser, msg):
     if opt is None:
-        print >> sys.stderr, msg
+        print(msg, file=sys.stderr)
         parser.print_help()
         exit(1)
 
 def _checkCondition(cond, parser, msg):
     if not cond:
-        print >> sys.stderr, msg
+        print(msg, file=sys.stderr)
         parser.print_help()
         exit(1)
 
@@ -162,7 +162,7 @@ def _parseOptions():
         _checkOpen(_getDictFilename(opts, isGenerator=True), 'w')
     
     if not opts.serializationMethod.upper() in [SerializationMethod.SIMPLE, SerializationMethod.V1]:
-        print >> sys.stderr, '--serialization-method must be one of ('+str([SerializationMethod.SIMPLE, SerializationMethod.V1])+')'
+        print('--serialization-method must be one of ('+str([SerializationMethod.SIMPLE, SerializationMethod.V1])+')', file=sys.stderr)
         parser.print_help()
         exit(1)
     
@@ -187,30 +187,30 @@ def _readDictIdAndCopyright(inputFiles):
                         dictIdTag, _, dictId = line.strip().partition(u' ')
                         exceptions.validate(
                             dictIdTag == u'#!DICT-ID',
-                            u'Dictionary ID tag must be followed by a space character and dictionary ID string')
+                            'Dictionary ID tag must be followed by a space character and dictionary ID string')
                         exceptions.validate(
                             len(line.split(u' ')) > 1,
-                            u'%s:%d: Must provide DICT-ID' % (inputFile, linenum))
+                            '%s:%d: Must provide DICT-ID' % (inputFile, linenum))
                         exceptions.validate(
                             len(line.split(u' ')) == 2,
-                            u'%s:%d: DICT-ID must not contain spaces' % (inputFile, linenum))
+                            '%s:%d: DICT-ID must not contain spaces' % (inputFile, linenum))
                     elif copyright is None and line.startswith(u'#<COPYRIGHT>'):
                         exceptions.validate(
                             line.strip() == u'#<COPYRIGHT>',
-                            u'%s:%d: Copyright start tag must be the only one in the line' % (inputFile, linenum))
+                            '%s:%d: Copyright start tag must be the only one in the line' % (inputFile, linenum))
 
                         inCopyright = True
-                        copyright = u''
+                        copyright = ''
 
-                    elif line.startswith(u'#</COPYRIGHT>'):
+                    elif line.startswith('#</COPYRIGHT>'):
 
                         exceptions.validate(
                             inCopyright,
-                            u'%s:%d: Copyright end tag must be preceded by copyright start tag' % (inputFile, linenum))
+                            '%s:%d: Copyright end tag must be preceded by copyright start tag' % (inputFile, linenum))
 
                         exceptions.validate(
                             line.strip() == u'#</COPYRIGHT>',
-                            u'%s:%d: Copyright end tag must be the only one in the line' % (inputFile, linenum))
+                            '%s:%d: Copyright end tag must be the only one in the line' % (inputFile, linenum))
 
                         inCopyright = False
 
@@ -219,21 +219,21 @@ def _readDictIdAndCopyright(inputFiles):
                         copyright += line
 
     if dictId is None:
-        logging.warn(u'No dictionary ID tag found')
-        dictId = u''
+        logging.warn('No dictionary ID tag found')
+        dictId = ''
 
     if copyright is None:
-        logging.warn(u'No copyright info found')
-        copyright = u''
+        logging.warn('No copyright info found')
+        copyright = ''
 
     return (dictId, copyright)
 
 def _readNamesAndQualifiers(inputFiles):
-    names = set([u''])
+    names = set([''])
     qualifiers = set([frozenset()])
     lineParser = convertinput.LineParser()
     for line in _concatFiles(inputFiles):
-        line = line.strip().decode('utf8')
+        line = line.strip()
         if not lineParser.ignoreLine(line):
             _, _, _, name, qualifier = lineParser.parseLine(line)
             names.add(name)
@@ -242,7 +242,7 @@ def _readNamesAndQualifiers(inputFiles):
     qualifiersMap = dict([(quals, idx) for idx, quals in enumerate(sorted(qualifiers, key=lambda q: tuple(sorted(q))))])
     exceptions.validate(
                     len(qualifiersMap) <= limits.MAX_QUALIFIERS_COMBINATIONS, 
-                    u'Too many qualifiers combinations. The limit is %d' % limits.MAX_QUALIFIERS_COMBINATIONS)
+                    'Too many qualifiers combinations. The limit is %d' % limits.MAX_QUALIFIERS_COMBINATIONS)
     
     return namesMap, qualifiersMap
 
@@ -364,11 +364,6 @@ def main(opts):
 if __name__ == '__main__':
     import os
     opts = _parseOptions()
-    #~ try:
     main(opts)
-    #~ except Exception as ex:
-        #~ print >> sys.stderr, u'Building dictionary file failed:', unicode(ex).encode('utf8'), 'type of error:', type(ex)
-        #~ sys.exit(1)
-    #~ finally:
-        #~ pass
+
 

@@ -20,7 +20,7 @@ class Tagset(object):
         #~ self._name2namenum = {}
         if filename:
             self._doInit(filename, encoding)
-        self._tagnum2tag = dict(map(lambda (k, v): (v, k), self.tag2tagnum.iteritems()))
+        self._tagnum2tag = dict([(v, k) for k, v in iter(self.tag2tagnum.items())])
     
     def _doInit(self, filename, encoding):
         insideTags = False

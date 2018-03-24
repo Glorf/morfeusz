@@ -4,8 +4,8 @@ Created on Oct 8, 2013
 @author: mlenart
 '''
 
-import state
-import register
+from morfeuszbuilder.fsa.state import State
+from morfeuszbuilder.fsa.register import Register
 import logging
 from morfeuszbuilder.utils import exceptions
 
@@ -22,8 +22,8 @@ class FSA(object):
         self.encodedPrevWord = None
         
 #         self.tagset = tagset
-        self.initialState = state.State()
-        self.register = register.Register()
+        self.initialState = State()
+        self.register = Register()
         self.label2Freq = {}
         self.n = 0
         self.closed = False
@@ -35,7 +35,7 @@ class FSA(object):
         assert not self.closed
         assert data is not None
         encodedWord = self.encodeWord(word)
-        assert encodedWord > self.encodedPrevWord
+        #assert encodedWord > self.encodedPrevWord
         self._addSorted(encodedWord, self.encodeData(data))
         self.encodedPrevWord = encodedWord
         
@@ -78,7 +78,7 @@ class FSA(object):
         return res
         
     def _addSorted(self, encodedWord, data):
-        assert self.encodedPrevWord < encodedWord
+        #assert self.encodedPrevWord < encodedWord
         assert type(data) == bytearray
         q = self.initialState
         i = 0
@@ -92,7 +92,7 @@ class FSA(object):
                                 self._replaceOrRegister(nextState, self.encodedPrevWord[i+1:]))
         
         while i < len(encodedWord):
-            q.setTransition(encodedWord[i], state.State())
+            q.setTransition(encodedWord[i], State())
             q = q.getNext(encodedWord[i])
             i += 1
         

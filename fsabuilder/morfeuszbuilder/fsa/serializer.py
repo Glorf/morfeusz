@@ -5,7 +5,7 @@ Created on Oct 20, 2013
 '''
 
 import logging
-from state import State
+from morfeuszbuilder.fsa.state import State
 from morfeuszbuilder.utils import limits, exceptions
 from morfeuszbuilder.utils.serializationUtils import *
 
@@ -106,7 +106,7 @@ class Serializer(object):
         res = bytearray()
         numOfTags = len(tagsMap)
         res.extend(htons(numOfTags))
-        for tag, tagnum in sorted(tagsMap.iteritems(), key=lambda (tag, tagnum): tagnum):
+        for tag, tagnum in sorted(iter(tagsMap.items()), key=lambda x: x[1]):
             res.extend(htons(tagnum))
             res.extend(self.fsa.encodeWord(tag))
             res.append(0)
@@ -121,7 +121,7 @@ class Serializer(object):
         #~ return res
     
     def serializeQualifiersMap(self):
-        label2labelId = dict([ (u'|'.join(qualifiers), n) for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n) ])
+        label2labelId = dict([ ('|'.join(qualifiers), n) for qualifiers, n in sorted(iter(self.qualifiersMap.items()), key=lambda n: n[1]) ])
         return self._serializeTags(label2labelId)
         #~ res = bytearray()
         #~ res.extend(htons(len(self.qualifiersMap)))
@@ -186,9 +186,9 @@ class Serializer(object):
         return res
     
     def getSortedTransitions(self, state):
-        defaultKey = lambda (label, nextState): (-state.label2Freq.get(label, 0), -self.fsa.label2Freq.get(label, 0))
+        defaultKey = lambda label: (-state.label2Freq.get(label[0], 0), -self.fsa.label2Freq.get(label[0], 0))
         return list(sorted(
-                           state.transitionsMap.iteritems(),
+                           iter(state.transitionsMap.items()),
                            key=defaultKey))
     
     def stateData2bytearray(self, state):
@@ -270,7 +270,7 @@ class VLengthSerializer1(Serializer):
         res = bytearray()
         
         # labels sorted by popularity
-        sortedLabels = [label for (label, freq) in sorted(self.fsa.label2Freq.iteritems(), key=lambda (label, freq): (-freq, label))]
+        sortedLabels = [label for (label, freq) in sorted(iter(self.fsa.label2Freq.items()), key=lambda x: (-x[1], x[0]))]
         
         # popular labels table
         self.label2ShortLabel = dict([(label, sortedLabels.index(label) + 1) for label in sortedLabels[:63]])
@@ -380,7 +380,7 @@ class VLengthSerializer1(Serializer):
         newState.encodedData = state.encodedData
         newState.reverseOffset = state.reverseOffset
         newState.offset = state.offset
-        newState.transitionsMap = dict([(label, nextState) for (label, nextState) in state.transitionsMap.iteritems()])
+        newState.transitionsMap = dict([(label, nextState) for (label, nextState) in iter(state.transitionsMap.items())])
 #         newState.transitionsMap = dict([(label, nextState) for (label, nextState) in state.transitionsMap.iteritems() if not label in self.label2ShortLabel or not self.label2ShortLabel[label] in range(1,64)])
         newState.serializeAsArray = False
         return newState
@@ -388,7 +388,7 @@ class VLengthSerializer1(Serializer):
     def _transitions2ArrayBytes(self, state):
         res = bytearray()
         array = [0] * 64
-        for label, nextState in state.transitionsMap.iteritems():
+        for label, nextState in iter(state.transitionsMap.items()):
             if label in self.label2ShortLabel:
                 shortLabel = self.label2ShortLabel[label]
                 array[shortLabel] = nextState.offset

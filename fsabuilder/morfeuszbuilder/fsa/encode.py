@@ -24,7 +24,7 @@ class Encoder(object):
         #~ self.qualifiersMap = { frozenset(): 0}
     
     def encodeWord(self, word, lowercase=True):
-        assert type(word) == unicode
+        assert type(word) == str
         res = bytearray(word.lower() if self.lowercase and lowercase else word, self.encoding)
         return res
     
@@ -35,7 +35,7 @@ class Encoder(object):
         return NotImplementedError()
 
     def decodeWord(self, rawWord):
-        return unicode(str(rawWord).strip('\x00'), self.encoding)
+        return str(rawWord).strip('\x00')
     
     def word2SortKey(self, word):
         normalizedWord = word.lower() if self.lowercase else word
@@ -86,7 +86,7 @@ class Encoder(object):
         
         res = bytearray()
         
-        for typenum, interpsList in segnum2Interps.iteritems():
+        for typenum, interpsList in iter(segnum2Interps.items()):
             res.extend(self._encodeInterps4Type(typenum, interpsList))
         del interpsList
         

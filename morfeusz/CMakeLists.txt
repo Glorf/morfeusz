@@ -16,14 +16,14 @@ else ()
         endif ()
         add_custom_command (
             OUTPUT "${ANALYZER_DICTIONARY_CPP}" "${GENERATOR_DICTIONARY_CPP}"
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --analyzer-cpp="${ANALYZER_DICTIONARY_CPP}" --generator-cpp="${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" ${ADDITIONAL_CMD}
+            COMMAND python3 ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder.py --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --analyzer-cpp="${ANALYZER_DICTIONARY_CPP}" --generator-cpp="${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" ${ADDITIONAL_CMD}
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary C++ files"
         )
     else ()
         add_custom_command (
             OUTPUT "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" 
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --dict-dir="${DEFAULT_DICT_DIR}"  --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
+            COMMAND python3 ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder.py --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --dict-dir="${DEFAULT_DICT_DIR}"  --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary files"
         )
@@ -38,19 +38,6 @@ else ()
     add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_FILE}")
 endif ()
 add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
-add_custom_target ( dictionary-deb
-    COMMAND "${PROJECT_SOURCE_DIR}/createDictionaryDeb.sh" "${DEFAULT_DICT_DIR}" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${TARGET_DIR}"
-        DEPENDS dictionary)
-add_custom_target ( bin-deb
-    COMMAND "${PROJECT_SOURCE_DIR}/createBinDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_LIB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}"
-        DEPENDS morfeusz_analyzer morfeusz_generator)
-add_custom_target ( lib-deb
-    COMMAND "${PROJECT_SOURCE_DIR}/createLibraryDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_LIB_VERSION}" "${ARCHITECTURE}" ${DEFAULT_DICT_NAME} "${TARGET_DIR}"
-        DEPENDS libmorfeusz)
-add_custom_target ( dev-deb
-    COMMAND "${PROJECT_SOURCE_DIR}/createDevDeb.sh" "${PROJECT_SOURCE_DIR}/morfeusz" "${Morfeusz_LIB_VERSION}" "${TARGET_DIR}"
-    DEPENDS "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2.h" "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_c.h")
-
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 

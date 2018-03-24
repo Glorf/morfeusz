@@ -20,7 +20,7 @@ function buildDictionaries {
     INPUT_TAGSET=input/morfeusz-sgjp.tagset
     SEGMENT_RULES_FILE=input/segmenty.dat
     
-    python fsabuilder/morfeusz_builder \
+    python3 fsabuilder/morfeusz_builder.py \
         --input-files="$INPUT_DICTIONARIES" \
         --tagset-file="$INPUT_TAGSET" \
         --segments-file="$SEGMENT_RULES_FILE" \
